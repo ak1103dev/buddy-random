@@ -1,4 +1,19 @@
+import nodemailer from 'nodemailer'
+import { email } from './email'
+import { profiles } from './profiles'
+
 console.log("Hello via Bun!");
+
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  host: "smtp.gmail.com",
+  port: 456,
+  secure: true, // true for port 465, false for other ports
+  auth: {
+    user: email.username,
+    pass: email.password,
+  },
+});
 
 export interface Profile {
   name: string;
@@ -40,3 +55,36 @@ export const reArrange = (profiles: Profile[]): Result[] => {
     buddy: shuffled[index].name
   }));
 }
+
+async function sendEmail(data: Result) {
+  console.log(data)
+  await transporter.sendMail({
+    from: 'raven.torp54@ethereal.email', // sender address
+    to: data.email, // list of receivers
+    subject: "Buddy Result", // Subject line
+    text: "Hello world?", // plain text body
+    html: `
+      <b>Dear ${data.name}</b>
+      <br>
+      <i>Your buddy is ${data.buddy}</i>
+    `, // html body
+  });
+  console.log('sent')
+}
+
+async function main() {
+  const profiles: Profile[] = [
+    { name: 'p', email: 'ak1103dev+p@gmail.com' },
+    { name: 'a', email: 'ak1103dev+a@gmail.com' },
+    { name: 'g', email: 'ak1103dev+g@gmail.com' },
+  ];
+
+  const result = reArrange(profiles);
+  await Promise.all(result.map((r) => {
+    sendEmail(r)
+  }))
+  console.log('success')
+  // console.log(result);
+}
+
+main()
