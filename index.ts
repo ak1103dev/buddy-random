@@ -57,27 +57,32 @@ export const reArrange = (profiles: Profile[]): Result[] => {
 }
 
 async function sendEmail(data: Result) {
-  console.log(data)
-  await transporter.sendMail({
-    from: 'raven.torp54@ethereal.email', // sender address
-    to: data.email, // list of receivers
-    subject: "Buddy Result", // Subject line
-    text: "Hello world?", // plain text body
-    html: `
-      <b>Dear ${data.name}</b>
-      <br>
-      <i>Your buddy is ${data.buddy}</i>
-    `, // html body
-  });
-  console.log('sent')
+  // console.log(data)
+  try {
+    await transporter.sendMail({
+      from: 'ak1103dev@gmail.com', // sender address
+      to: data.email, // list of receivers
+      subject: "Buddy Result (round test)", // Subject line
+      text: "Hello world?", // plain text body
+      html: `
+        <b>Dear ${data.name}</b>
+        <br>
+        <i>Your buddy is ${data.buddy}</i>
+      `, // html body
+    });
+    console.log('sent')
+  } catch (e) {
+    console.log(e, data.email)
+  }
 }
 
 async function main() {
-  const profiles: Profile[] = [
-    { name: 'p', email: 'ak1103dev+p@gmail.com' },
-    { name: 'a', email: 'ak1103dev+a@gmail.com' },
-    { name: 'g', email: 'ak1103dev+g@gmail.com' },
-  ];
+  // const profiles: Profile[] = profiles;
+  // [
+  //   { name: 'p', email: 'ak1103dev+p@gmail.com' },
+  //   { name: 'a', email: 'ak1103dev+a@gmail.com' },
+  //   { name: 'g', email: 'ak1103dev+g@gmail.com' },
+  // ];
 
   const result = reArrange(profiles);
   await Promise.all(result.map((r) => {
